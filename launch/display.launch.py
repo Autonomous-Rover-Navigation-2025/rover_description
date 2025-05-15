@@ -11,30 +11,48 @@ def generate_launch_description():
     pkg_share = FindPackageShare(
         package='rover_description').find('rover_description')
     default_model_path = os.path.join(pkg_share, 'src', 'description',
-                                      'rover_description.sdf')
+                                      'rover_description.urdf')
     default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
+    robot_localization_config = os.path.join(
+        pkg_share,
+        'params',
+        'ekf_params.yaml',
+    )
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         parameters=[{
             'robot_description':
-            Command(['xacro ', LaunchConfiguration('model')])
+            Command(['xacro ', LaunchConfiguration('model')]),
         }])
+
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         parameters=[{
             'robot_description':
-            Command(['xacro ', default_model_path])
+            Command(['xacro ', default_model_path]),
         }],
         condition=UnlessCondition(LaunchConfiguration('gui')))
+
     joint_state_publisher_gui_node = Node(
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui',
         condition=IfCondition(LaunchConfiguration('gui')))
+
+    robot_localization_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_node',
+        output='screen',
+        parameters=[
+            robot_localization_config,
+        ],
+    )
+
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -54,6 +72,9 @@ def generate_launch_description():
         DeclareLaunchArgument(name='rvizconfig',
                               default_value=default_rviz_config_path,
                               description='Absolute path to rviz config file'),
-        joint_state_publisher_node, joint_state_publisher_gui_node,
-        robot_state_publisher_node, rviz_node
+        joint_state_publisher_node,
+        joint_state_publisher_gui_node,
+        robot_state_publisher_node,
+        robot_localization_node,
+        rviz_node,
     ])

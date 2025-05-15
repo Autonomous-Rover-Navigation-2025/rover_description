@@ -53,6 +53,16 @@
       <axis xyz="0 1 0"/>
     </joint>
   </xacro:macro>
+  
+  <!-- LiDAR -->
+  <link name="laser"/>
+
+  <!-- Static Transform from base_link to laser -->
+  <joint name="base_link_to_laser" type="fixed">
+    <parent link="base_link"/>
+    <child link="laser"/>
+    <origin xyz="0.2 0.0 0.1" rpy="0 0 0"/>  <!-- adjust xyz/rpy as needed -->
+  </joint>
 
   <xacro:wheel prefix="front_left_whl" x_reflect="-1" y_reflect="1" />
   <xacro:wheel prefix="front_right_whl" x_reflect="-1" y_reflect="-1" />
