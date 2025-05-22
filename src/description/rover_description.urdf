@@ -64,8 +64,40 @@
     <origin xyz="0.2 0.0 0.1" rpy="0 0 0"/>  <!-- adjust xyz/rpy as needed -->
   </joint>
 
+  <link name="camera_link"/>
+
+  <!-- Static Transform from base_link to camera_link -->
+  <joint name="base_link_to_camera_link" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.2 0.0 0.1" rpy="0 0 0"/>  <!-- adjust xyz/rpy as needed -->
+  </joint>
+
   <xacro:wheel prefix="front_left_whl" x_reflect="-1" y_reflect="1" />
   <xacro:wheel prefix="front_right_whl" x_reflect="-1" y_reflect="-1" />
   <xacro:wheel prefix="back_left_whl" x_reflect="1" y_reflect="1" />
   <xacro:wheel prefix="back_right_whl" x_reflect="1" y_reflect="-1" />
+
+  <!-- ros2_control integration -->
+  <ros2_control name="RoverSystem" type="system">
+    <hardware>
+      <!--<plugin>wheel_odometry_HW_interface/RoverHardware</plugin> -->
+      <plugin>rover_hardware_interface/RoverHardware</plugin>
+      <param name="max_speed">1.21</param>
+      <param name="wheel_diameter">0.1524</param>
+      <param name="ticks_per_rotation">620</param>
+    </hardware>
+
+    <joint name="front_left_whl_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_right_whl_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
 </robot>
