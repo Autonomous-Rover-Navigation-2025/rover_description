@@ -15,8 +15,8 @@ def generate_launch_description():
     default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
     robot_localization_config = os.path.join(
         pkg_share,
-        'params',
-        'ekf_params.yaml',
+        'config',
+        'robot_localization.yaml',
     )
 
     robot_state_publisher_node = Node(
@@ -43,15 +43,15 @@ def generate_launch_description():
         name='joint_state_publisher_gui',
         condition=IfCondition(LaunchConfiguration('gui')))
 
-    robot_localization_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_node',
-        output='screen',
-        parameters=[
-            robot_localization_config,
-        ],
-    )
+    # robot_localization_node = Node(
+    #     package='robot_localization',
+    #     executable='ekf_node',
+    #     name='ekf_node',
+    #     output='screen',
+    #     parameters=[robot_localization_config],
+    #     # remappings=[('/odometry/filtered', '/odom')],
+    #     # arguments=['--ros-args', '--log-level', 'debug'],
+    # )
 
     rviz_node = Node(
         package='rviz2',
@@ -75,6 +75,6 @@ def generate_launch_description():
         joint_state_publisher_node,
         joint_state_publisher_gui_node,
         robot_state_publisher_node,
-        robot_localization_node,
+        # robot_localization_node,
         rviz_node,
     ])
