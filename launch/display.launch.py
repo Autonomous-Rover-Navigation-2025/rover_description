@@ -54,18 +54,6 @@ def generate_launch_description():
         # arguments=['--ros-args', '--log-level', 'debug'],
     )
 
-    madgwick_node = Node(
-        package="imu_filter_madgwick",
-        executable="",
-        name="imu_filter",
-        output="screen",
-        parameters=[{"use_mag": False, "world_frame": "enu", "gain": 0.05}],
-        remappings=[
-            ("imu/data_raw", "/camera/imu"),
-            ("imu/data", "/imu/data"),
-        ],
-    )
-
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
